@@ -5,7 +5,7 @@ function init() {
 
 	Homey.log("Started NAD");
 
-	Homey.manager('flow').on('action.music_on', function(callback, args) {
+	Homey.manager('flow').on('action.select_input', function(callback, args) {
 		Homey.log("event music_on triggered args.input_channel=" + args.input_channel );
 
 		var h = Homey.manager("settings").get("host");

@@ -12,42 +12,25 @@
     "flow": {
       "actions": [
         {
-          "id": "music_on",
+          "id": "select_input",
           "title": {
               "en": "Switch on NAD and select ... "
           },
           "args": [
             {
               "name": "input_channel",
-              "type": "dropdown",
-              "values": [
-                {
-                  "id": "music",
-                  "label": {
-                    "en":"sonos"
-                  }
-                },
-                {
-                  "id": "mediacenter",
-                  "label": {
-                    "en":"mediacenter"
-                  }
-                },
-                {
-                  "id":"xbox",
-                  "label":{
-                    "en":"xbox"
-                  }
-                },
-                {
-                  "id":"appletv",
-                  "label":{
-                    "en":"AppleTV"
-                  }
-                }
-              ]
+              "type": "number",
+              "min":1,
+              "max":9,
+              "placeholder":1
             }
           ]
+        },
+        {
+          "id": "power_off",
+          "title": {
+            "en": "Switch off NAD"
+          }
         }
       ]
     }
