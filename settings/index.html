@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+    <head>
+
+    </head>
+    <body>
+
+        <h1>NAD T758 Settings</h1>
+        <p>Configure the settings to communicate with your NAD T758</p>
+        <p>This is not a standalone app. It requires a device which
+          is connected directly to your NAD's serial port. </p>
+        <p>Other models might work, but have not been tested</p>
+
+        <fieldset>
+            <legend>Serial Device</legend>
+
+            <div class="field row">
+                <label for="host">Host IP or Hostname</label>
+                <input id="host" type="url" value="" placeholder="http://192.168.178.79"/>
+            </div>
+
+            <div class="field row">
+                <label for="port">URL</label>
+                <input id="port" type="number" value="" placeholder="3000"/>
+            </div>
+        </fieldset>
+
+        <button class="right" onclick="save()">Save changes</button>
+
+        <script type="text/javascript">
+        function onHomeyReady(){
+            Homey.ready();
+
+            Homey.get("host", function(err,val) {
+              if (val) {
+                document.getElementById('host').value = val;
+              }
+            });
+
+            Homey.get("port", function(err,val) {
+              if (val) {
+                document.getElementById('port').value = val;
+              }
+            });
+        }
+
+        function save() {
+            Homey.set('host', document.getElementById('host').value);
+            Homey.set('port', document.getElementById('port').value);
+        }
+        </script>
+
+    </body>
+</html>

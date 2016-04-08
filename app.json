@@ -1,0 +1,54 @@
+{
+    "id": "com.roelnoort.nad",
+    "name": {
+        "en": "NAD T758"
+    },
+    "version": "0.0.1",
+    "compatibility": "0.x || 1.x",
+    "author": {
+        "name": "Roel Noort",
+        "email": "roelnoort@gmail.com"
+    },
+    "flow": {
+      "actions": [
+        {
+          "id": "music_on",
+          "title": {
+              "en": "Switch on NAD and select ... "
+          },
+          "args": [
+            {
+              "name": "input_channel",
+              "type": "dropdown",
+              "values": [
+                {
+                  "id": "music",
+                  "label": {
+                    "en":"sonos"
+                  }
+                },
+                {
+                  "id": "mediacenter",
+                  "label": {
+                    "en":"mediacenter"
+                  }
+                },
+                {
+                  "id":"xbox",
+                  "label":{
+                    "en":"xbox"
+                  }
+                },
+                {
+                  "id":"appletv",
+                  "label":{
+                    "en":"AppleTV"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+}
