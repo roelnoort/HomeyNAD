@@ -10,7 +10,7 @@ function init() {
 
 		var h = Homey.manager("settings").get("host");
 		var p = Homey.manager("settings").get("port");
-		var url = h + ":" + p + "/switchnad/" + args.input_channel;
+		var url = h + ":" + p + "/switchinput/" + args.input_channel;
 
 		Homey.log("attempting to call [" + url + "]");
 
