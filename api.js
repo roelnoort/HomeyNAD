@@ -5,12 +5,13 @@ module.exports = [
         path:			'/detect',
         fn: function( callback, args ){
 						Homey.log("in API callback")
-						var result = "hello";//Homey.app.detectNadControler();
-
-            // callback follows ( err, result )
-            callback( null, result );
-
-            // access /?foo=bar as args.query.foo
+						Homey.app.detectNadControler(function(success, result){
+							if (success) {
+								callback(false, result)
+							} else {
+								callback(true, null);
+							}
+						});
         }
     }
 ]

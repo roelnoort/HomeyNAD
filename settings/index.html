@@ -16,12 +16,7 @@
 
             <div class="field row">
                 <label for="host">Host IP or Hostname</label>
-                <input id="host" type="url" value="" placeholder="http://192.168.178.79"/>
-            </div>
-
-            <div class="field row">
-                <label for="port">URL</label>
-                <input id="port" type="number" value="" placeholder="3000"/>
+                <input id="host" type="url" value="http://" placeholder="http://192.168.178.79"/>
             </div>
         </fieldset>
 
@@ -36,24 +31,35 @@
               }
             });
 
-            Homey.get("port", function(err,val) {
-              if (val) {
-                document.getElementById('port').value = val;
-              }
-            });
-
             Homey.ready();
         }
 
+        function ValidURL(str) {
+          var pattern = new RegExp('^(https?:\/\/)?'+ // protocol
+            '((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|'+ // domain name
+            '((\d{1,3}\.){3}\d{1,3}))'); // OR ip (v4) address
+
+          return pattern.test(str);
+        }
+
         function save() {
-            Homey.set('host', document.getElementById('host').value);
-            Homey.set('port', document.getElementById('port').value);
+            host = document.getElementById('host').value;
+            if (ValidURL(host)) {
+                Homey.set('host', host);
+            } else {
+                alert("Please enter a valid host name or host ip.\n" +
+                      "Also include the protocol (http://).")
+            }
+
         }
 
         function detect() {
             Homey.api('GET', '/detect', function(err, things) {
-                //if (err) return document.getElementById('host').value = "Err"
-                document.getElementById('host').value = "OK=" + things;
+                if (err) {
+                    alert("NAD Controler not detected")
+                } else {
+                    document.getElementById('host').value = "http://" + things.host;
+                }
             })
         }
         </script>
