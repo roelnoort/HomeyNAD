@@ -60,12 +60,17 @@ function detectNadControler(cb) {
 		var dgram = require("dgram")
 		var message = new Buffer("detectNadControler")
 		var socket = dgram.createSocket("udp4")
+		var timerId = null
 
 		socket.on("message", function(msg, rinfo) {
 				Homey.log("detectNad received reply from upd " + rinfo.address + ":" + rinfo.port)
 				// note that rinfo.address, rinfo.port refer to the UDP
 				// server used for detection. the actual TCP server is at
 				// port 80 on the same IP
+
+				if (timerId) {
+						clearTimeout(timerId)
+				}
 				cb(true, {host: rinfo.address, port: 80})
 				socket.close()
 		})
@@ -83,8 +88,9 @@ function detectNadControler(cb) {
 		  }
 		})
 
-		setTimeout(function() {
+		timerId = setTimeout(function() {
 				Homey.log("timeout reached on detectNad")
+				timerId = null
 				socket.close();
 				cb(false, null);
 		}, 10000)
