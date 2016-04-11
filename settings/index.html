@@ -25,12 +25,11 @@
             </div>
         </fieldset>
 
+        <button class="left" onclick="detect()">Detect NAD Controler</button>
         <button class="right" onclick="save()">Save changes</button>
 
         <script type="text/javascript">
         function onHomeyReady(){
-            Homey.ready();
-
             Homey.get("host", function(err,val) {
               if (val) {
                 document.getElementById('host').value = val;
@@ -42,11 +41,20 @@
                 document.getElementById('port').value = val;
               }
             });
+
+            Homey.ready();
         }
 
         function save() {
             Homey.set('host', document.getElementById('host').value);
             Homey.set('port', document.getElementById('port').value);
+        }
+
+        function detect() {
+            Homey.api('GET', '/detect', function(err, things) {
+                //if (err) return document.getElementById('host').value = "Err"
+                document.getElementById('host').value = "OK=" + things;
+            })
         }
         </script>
 
