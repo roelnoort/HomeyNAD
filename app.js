@@ -34,7 +34,7 @@ function init() {
 
 		var h = Homey.manager("settings").get("host");
 		var p = 80;
-		var url = h + ":" + p + "/poweroff/";
+		var url = h + ":" + p + "/poweroff";
 
 		Homey.log("attempting to call [" + url + "]");
 
