@@ -8,93 +8,48 @@ function init() {
 	Homey.manager('flow').on('action.select_input', function(callback, args) {
 		Homey.log("event select_input triggered args.input_channel=" + args.input_channel );
 
-		var h = Homey.manager("settings").get("host");
-		var p = 80;
-		var url = h + ":" + p + "/switchinput/" + args.input_channel;
-
-		Homey.log("attempting to call [" + url + "]");
-
-		request.post(
-			url,
-			{},
-			function (error, response, body) {
-				if (!error && response.statusCode == 200) {
-					Homey.log("successfully called switchnad service");
-					callback(null, true); // we've fired successfully
-				} else {
-					Homey.log("error calling switchinput service");
-					callback(null, false);
-				}
+		Homey.manager('drivers').getDriver('nad_amp').capabilities.onoff.set(args.device, true, function(err, success) {
+			if (!err && success) {
+				Homey.manager('drivers').getDriver('nad_amp').capabilities.source_input.set(args.device, args.input_channel, function(err, success) {
+					callback(null, !err && success);
+				});
+			} else {
+				callback(null, false);
 			}
-		);
+		});
+	});
+
+	Homey.manager('flow').on('action.source_input', function(callback, args) {
+		Homey.log("event source_input triggered args.input_channel=" + args.input_channel );
+
+		Homey.manager('drivers').getDriver('nad_amp').capabilities.source_input.set(args.device, args.input_channel, function(err, success) {
+			callback(null, !err && success);
+		});
+	});
+
+	Homey.manager('flow').on('action.power_on', function(callback, args) {
+		Homey.log("event power_on triggered for device=" + args.device);
+
+		Homey.manager('drivers').getDriver('nad_amp').capabilities.onoff.set(args.device, true, function(err, success) {
+			callback(null, !err && success);
+		});
 	});
 
 	Homey.manager('flow').on('action.power_off', function(callback, args) {
-		Homey.log("event power_off triggered");
+		Homey.log("event power_off triggered for device=" + args.device);
 
-		var h = Homey.manager("settings").get("host");
-		var p = 80;
-		var url = h + ":" + p + "/poweroff";
+		Homey.manager('drivers').getDriver('nad_amp').capabilities.onoff.set(args.device, false, function(err, success) {
+			callback(null, !err && success);
+		});
+	});
 
-		Homey.log("attempting to call [" + url + "]");
+	Homey.manager('flow').on('action.volume_set', function(callback, args) {
+		Homey.log("event power_on triggered for device=" + args.device);
 
-		request.post(
-			url,
-			{},
-			function (error, response, body) {
-				if (!error && response.statusCode == 200) {
-					Homey.log("successfully called poweroff service");
-					callback(null, true); // we've fired successfully
-				} else {
-					Homey.log("error calling poweroff service");
-					callback(null, false);
-				}
-			}
-		);
+		Homey.manager('drivers').getDriver('nad_amp').capabilities.volume_set.set(args.device, args.volume, function(err, success) {
+			callback(null, !err && success);
+		});
 	});
 }
 
-function detectNadControler(cb) {
-		Homey.log("in detectNadControler")
-
-		var dgram = require("dgram")
-		var message = new Buffer("detectNadControler")
-		var socket = dgram.createSocket("udp4")
-		var timerId = null
-
-		socket.on("message", function(msg, rinfo) {
-				Homey.log("detectNad received reply from upd " + rinfo.address + ":" + rinfo.port)
-				// note that rinfo.address, rinfo.port refer to the UDP
-				// server used for detection. the actual TCP server is at
-				// port 80 on the same IP
-
-				if (timerId) {
-						clearTimeout(timerId)
-				}
-				cb(true, {host: rinfo.address, port: 80})
-				socket.close()
-		})
-
-		socket.on("listening", function() {
-		    Homey.log("listening event for detectNad called")
-		    socket.setBroadcast(true)
-		})
-
-		socket.send(message, 0, message.length, 2705, "255.255.255.255", function(err, bytes) {
-		  if (err) {
-		    Homey.log("error sending detectNad on socket")
-		  } else {
-		    Homey.log("udp detectNad message sent")
-		  }
-		})
-
-		timerId = setTimeout(function() {
-				Homey.log("timeout reached on detectNad")
-				timerId = null
-				socket.close();
-				cb(false, null);
-		}, 10000)
-}
-
 module.exports.init = init;
-module.exports.detectNadControler = detectNadControler;
